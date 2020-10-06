@@ -42,3 +42,4 @@ fetch(url)
   })
 
   .catch(error => document.body.innerHTML = `Пользователь не найден.<br> ${error}`);
+  
