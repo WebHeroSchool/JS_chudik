@@ -1,36 +1,29 @@
-const body = document.body;
-const urlParam = window.location.search.substring(1);
-const login = (urlParam.split(('='))[1]);
-let url = 'https://api.github.com/users/ivanburovkin';
-if (login) {
-  url = `https://api.github.com/users/${login}`;
-}
+const login = 'ivanburovkin';
 
-fetch(url)
-  .then(response => {
-    if (response.status !== 404) {
-      return response.json();
+fetch(`https://api.github.com/users/${login}`)
+  .then(res => {
+    if (res.status !== 404) {
+      return res.json();
     } else {
-      let err = new Error(response.statusText + ' ' + response.status);
-      err.response = response;
+      let err = new Error(res.statusText + ' ' + res.status);
+      err.res = res;
       throw err;
     }
   })
 
   .then(json => {
-    let ava = new Image();
-    ava.src = json.avatar_url;
-    body.append(ava);
-
     let link = document.createElement('a');
     link.href = json.html_url;
-    link.style.display = "block";
+    link.style.cssText = `
+      display: block;
+      font-size: 40px;
+    `;
     if (json.name) {
       link.innerHTML = json.name;
     } else {
       link.innerHTML = 'Информация о пользователе недоступна';
     }
-    body.appendChild(link);
+    document.body.append(link);
 
     let bio = document.createElement('p');
     if (json.bio) {
@@ -38,8 +31,11 @@ fetch(url)
     } else {
       bio.innerHTML = 'Пользователь не заполнил данное поле';
     }
-    body.append(bio);
+    document.body.append(bio);
+
+    let ava = new Image();
+    ava.src = json.avatar_url;
+    document.body.append(ava);
   })
 
   .catch(error => document.body.innerHTML = `Пользователь не найден.<br> ${error}`);
-  
