@@ -52,6 +52,9 @@ Promise.all([getDate, getUser])
     let date = document.createElement('p');
     date.innerHTML = `Текущая дата ${currentDate}`;
     document.body.append(date);
+
+    let preloader = document.querySelector('#preloader');
+    preloader.style.display = 'none';
   })
 
   .catch(error => document.body.innerHTML = `Пользователь не найден.<br> ${error}`)
