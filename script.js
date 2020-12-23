@@ -1,6 +1,18 @@
 const login = 'ivanburovkin';
+const url = `https://api.github.com/users/${login}`;
 
-fetch(`https://api.github.com/users/${login}`)
+let getDate = new Promise((resolve, reject) => {
+  const currentDate = new Date().toLocaleDateString();
+  setTimeout(() => currentDate ? resolve(currentDate) : reject('Не получилось определить дату'), 3000);
+});
+
+let getUser = new Promise((resolve, reject) => {
+  setTimeout(() => url ? resolve(url) : reject('nope'), 3000);
+});
+
+Promise.all([getDate, getUser])
+  .then(([currentDate, url]) => fetch(url)
+
   .then(res => {
     if (res.status !== 404) {
       return res.json();
@@ -36,6 +48,11 @@ fetch(`https://api.github.com/users/${login}`)
     let ava = new Image();
     ava.src = json.avatar_url;
     document.body.append(ava);
+
+    let date = document.createElement('p');
+    date.innerHTML = `Текущая дата ${currentDate}`;
+    document.body.append(date);
   })
 
-  .catch(error => document.body.innerHTML = `Пользователь не найден.<br> ${error}`);
+  .catch(error => document.body.innerHTML = `Пользователь не найден.<br> ${error}`)
+  );
